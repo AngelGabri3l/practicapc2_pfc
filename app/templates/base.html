@@ -38,6 +38,7 @@
           {% if usuario %}
             {% if usuario.rol == 'ciudadano' %}
             {{ m.enlace('ofertas.nueva', 'Publicar', 'mas') }}
+            {{ m.enlace('ofertas.mis', 'Mis ofertas', 'caja') }}
             {# nav-ciudadano #}
             {% elif usuario.rol == 'recolector' %}
             {# nav-recolector #}
