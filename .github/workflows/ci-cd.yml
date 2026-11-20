@@ -28,6 +28,21 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  sast-sca:
+    name: Bandit (SAST) + pip-audit (dependencias)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar herramientas
+        run: pip install bandit pip-audit
+      - name: Bandit (análisis estático del código)
+        run: bandit -r app -ll
+      - name: pip-audit (vulnerabilidades en dependencias)
+        run: pip-audit -r requirements.txt
   # [jobs-seguridad]
   test:
     name: Pruebas con MySQL
