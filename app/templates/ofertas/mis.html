@@ -23,6 +23,12 @@
     </ul>
     <div class="acciones">
       <a class="boton boton--secundario boton--sm" href="{{ url_for('ofertas.detalle', oferta_id=oferta.id) }}">Ver detalle</a>
+      {% if oferta.estado == 'Disponible' %}
+      <form method="post" action="{{ url_for('ofertas.cancelar', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--peligro boton--sm" type="submit">Cancelar oferta</button>
+      </form>
+      {% endif %}
       {# oferta-acciones #}
     </div>
   </li>
