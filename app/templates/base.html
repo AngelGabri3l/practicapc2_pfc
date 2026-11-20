@@ -44,6 +44,7 @@
             {% endif %}
             {# nav-sesion #}
           {% else %}
+            <li><a class="nav__enlace nav__destacado" href="{{ url_for('auth.registro') }}">Crear cuenta</a></li>
             {# nav-anonimo #}
           {% endif %}
         </ul>
