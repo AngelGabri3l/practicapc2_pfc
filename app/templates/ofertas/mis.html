@@ -22,6 +22,7 @@
       <li>{{ m.icono('pin') }} {{ oferta.distrito }}</li>
     </ul>
     <div class="acciones">
+      <a class="boton boton--secundario boton--sm" href="{{ url_for('ofertas.detalle', oferta_id=oferta.id) }}">Ver detalle</a>
       {# oferta-acciones #}
     </div>
   </li>
