@@ -1,0 +1,63 @@
+name: CI-CD DevSecOps
+
+on:
+  push:
+    branches: [main, test]
+  pull_request:
+    branches: [main, test]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # [jobs-seguridad]
+  test:
+    name: Pruebas con MySQL
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: ci_root_pw
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: ci_test_pw
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -pci_root_pw"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+      - name: Ejecutar pruebas (pytest)
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: "3306"
+          DB_NAME: testdb
+          DB_USER: testuser
+          DB_PASSWORD: ci_test_pw
+        run: pytest -v --junitxml=reports/junit.xml
+      - name: Resumen de pruebas
+        if: always()
+        run: python scripts/resumen_pruebas.py
+      - name: Guardar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-pruebas
+          path: reports/junit.xml
+          if-no-files-found: warn
+  # [jobs-build]
