@@ -1,0 +1,76 @@
+{% import "_macros.html" as m with context %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ReciclaRed conecta a quienes separan residuos reciclables con los puntos de acopio y los recolectores de su distrito.">
+  <meta name="theme-color" content="#1d7f59">
+  <title>{% block titulo %}Inicio{% endblock %} · ReciclaRed</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+  {% include "_iconos.html" %}
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  {% set usuario = g.get('usuario') %}
+  <header class="cabecera">
+    <div class="contenedor cabecera__fila">
+      <a class="marca" href="{{ url_for('main.index') }}">
+        <svg class="marca__icono" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <rect class="marca__fondo" width="32" height="32" rx="9"/>
+          <path class="marca__trazo" d="M9 21c0-7 5-12 14-12 0 8-5 13-12 13"/>
+          <path class="marca__trazo" d="M9.5 22.5c3-4.5 6-7 9.5-8.5"/>
+        </svg>
+        <span>Recicla<strong>Red</strong></span>
+      </a>
+      <input type="checkbox" id="menu-toggle" class="menu-toggle">
+      <label for="menu-toggle" class="menu-boton">
+        <span class="sr-only">Abrir o cerrar el menú</span>
+        <span class="menu-boton__linea" aria-hidden="true"></span>
+        <span class="menu-boton__linea" aria-hidden="true"></span>
+        <span class="menu-boton__linea" aria-hidden="true"></span>
+      </label>
+      <nav class="nav" aria-label="Navegación principal">
+        <ul class="nav__lista">
+          {# nav-publico #}
+          {% if usuario %}
+            {% if usuario.rol == 'ciudadano' %}
+            {# nav-ciudadano #}
+            {% elif usuario.rol == 'recolector' %}
+            {# nav-recolector #}
+            {% elif usuario.rol == 'admin' %}
+            {# nav-admin #}
+            {% endif %}
+            {# nav-sesion #}
+          {% else %}
+            {# nav-anonimo #}
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido" class="principal">
+    <div class="contenedor">
+      {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% if mensajes %}
+      <div class="avisos" role="status" aria-live="polite">
+        {% for categoria, mensaje in mensajes %}
+        <p class="aviso aviso--{{ categoria if categoria in ['exito', 'error', 'info'] else 'info' }}">{{ mensaje }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+      {% block contenido %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p>© ReciclaRed · Proyecto académico</p>
+      <p>Los datos mostrados son de demostración y ficticios.</p>
+    </div>
+  </footer>
+</body>
+</html>

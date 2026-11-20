@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Recicla sin complicaciones{% endblock %}
+{% block contenido %}
+<section class="hero">
+  <div class="hero__texto">
+    <span class="hero__etiqueta">{{ m.icono('hoja') }} Reciclaje que sí llega a su destino</span>
+    <h1>Que tus reciclables no terminen en la basura común</h1>
+    <p>Encuentra puntos de acopio cerca de ti, mira qué materiales reciben y en qué horario, o publica lo que tienes para que un recolector de tu distrito pase por ello.</p>
+    <div class="hero__acciones">
+      {# inicio-cta #}
+    </div>
+    {# inicio-busqueda #}
+  </div>
+  <div class="hero__arte" aria-hidden="true">
+    <div class="mock mock--atras">
+      <div class="mock__cabecera"><span class="estado estado--aceptada">Aceptada</span></div>
+      <p class="mock__titulo">Vidrio · 1 caja</p>
+    </div>
+    <div class="mock">
+      <div class="mock__cabecera">
+        <span class="estado estado--disponible">Disponible</span>
+        <span class="texto-suave">Hoy · 4:00 a 6:00 p. m.</span>
+      </div>
+      <p class="mock__titulo">Cartón · 3 cajas medianas</p>
+      <p class="mock__meta">{{ m.icono('pin') }} Distrito de ejemplo</p>
+      <div class="mock__barra"><span></span></div>
+      <p class="mock__pie">{{ m.icono('camion') }} Recolectores de tu zona lo ven al instante</p>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" aria-labelledby="como-funciona">
+  <h2 id="como-funciona">Cómo funciona</h2>
+  <ol class="pasos">
+    <li class="tarjeta paso"><span class="paso__numero">1</span><h3>Separa</h3><p>Papel, cartón, plástico, vidrio, metal o aparatos electrónicos.</p></li>
+    <li class="tarjeta paso"><span class="paso__numero">2</span><h3>Encuentra o publica</h3><p>Busca un punto de acopio o publica tu material con una ventana de recojo.</p></li>
+    <li class="tarjeta paso"><span class="paso__numero">3</span><h3>Se recoge</h3><p>Un recolector de tu distrito acepta la oferta y coordina contigo.</p></li>
+  </ol>
+</section>
+{% endblock %}
