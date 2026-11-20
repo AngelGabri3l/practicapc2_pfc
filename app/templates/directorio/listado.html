@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titulo %}Puntos de acopio{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>Puntos de acopio</h1>
+    <p>Encuentra dónde entregar tus reciclables, qué recibe cada punto y cuándo atiende.</p>
+  </div>
+</header>
+{# filtros #}
+{% if puntos %}
+<p class="texto-suave">{{ puntos|length }} {{ 'punto encontrado' if puntos|length == 1 else 'puntos encontrados' }}</p>
+<ul class="lista lista--rejilla">
+  {% for punto in puntos %}
+  <li class="item">
+    <div class="item__cabecera">
+      <h2 class="item__titulo">{{ punto.nombre }}</h2>
+      <span class="chip">{{ m.icono('pin') }} {{ punto.distrito }}</span>
+    </div>
+    <ul class="meta"><li>{{ m.icono('tienda') }} {{ punto.direccion }}</li></ul>
+    {% if punto.materiales %}
+    <ul class="chips" aria-label="Materiales que recibe">
+      {% for material in punto.materiales.split(', ') %}<li class="chip">{{ material }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {# punto-enlace #}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="vacio">
+  {{ m.icono('tienda') }}
+  <p><strong>Aún no hay puntos registrados</strong></p>
+  <p>Vuelve pronto: estamos sumando puntos de acopio.</p>
+</div>
+{% endif %}
+{% endblock %}
