@@ -103,4 +103,21 @@ def crear_punto(app):
             )
         return punto_id
     return crear
+@pytest.fixture
+def crear_oferta(app):
+    """Crea una oferta directamente en la base y devuelve su id."""
+    from datetime import date, timedelta
+
+    def crear(ciudadano_id, material="Cartón", distrito="Miraflores", estado="Disponible", recolector_id=None,
+              direccion="Calle Ficticia 742"):
+        manana = date.today() + timedelta(days=1)
+        with app.app_context():
+            material_id = bd.query("SELECT id FROM materiales WHERE nombre = %s", (material,), uno=True)["id"]
+            _, oferta_id = bd.execute(
+                "INSERT INTO ofertas (ciudadano_id, material_id, cantidad, direccion, distrito, fecha, hora_inicio, "
+                "hora_fin, estado, recolector_id) VALUES (%s, %s, '2 bolsas', %s, %s, %s, '09:00', '12:00', %s, %s)",
+                (ciudadano_id, material_id, direccion, distrito, manana, estado, recolector_id),
+            )
+        return oferta_id
+    return crear
 # [fixtures]
