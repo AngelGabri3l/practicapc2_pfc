@@ -2,6 +2,7 @@
 import os
 
 import pytest
+from werkzeug.security import generate_password_hash
 
 os.environ.setdefault("SECRET_KEY", "pruebas")
 
@@ -53,4 +54,28 @@ def consultar(app):
         with app.app_context():
             return bd.query(sql, params, uno=uno)
     return ejecutar
+CLAVE_PRUEBA = "clave-de-prueba"
+
+
+@pytest.fixture
+def crear_usuario(app):
+    """Crea un usuario directamente en la base y devuelve su id."""
+    def crear(email, rol="ciudadano", distrito="Miraflores", nombre="Persona de Prueba", telefono=None):
+        with app.app_context():
+            _, nuevo_id = bd.execute(
+                "INSERT INTO usuarios (nombre, email, password_hash, rol, distrito, telefono) "
+                "VALUES (%s, %s, %s, %s, %s, %s)",
+                (nombre, email, generate_password_hash(CLAVE_PRUEBA), rol, distrito, telefono),
+            )
+        return nuevo_id
+    return crear
+
+
+@pytest.fixture
+def iniciar_sesion(post):
+    def entrar(cliente, email, clave=CLAVE_PRUEBA):
+        respuesta = post(cliente, "/login", {"email": email, "password": clave})
+        assert respuesta.status_code == 302, "no se pudo iniciar sesión"
+        return respuesta
+    return entrar
 # [fixtures]
