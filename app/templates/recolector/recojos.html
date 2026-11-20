@@ -22,6 +22,16 @@
       <li>{{ m.icono('reloj') }} {{ recojo.hora_inicio|hora }} a {{ recojo.hora_fin|hora }}</li>
     </ul>
     <div class="acciones">
+      {% if recojo.estado == 'Aceptada' %}
+      <form method="post" action="{{ url_for('recolector.marcar_recogida', oferta_id=recojo.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--primario boton--sm" type="submit">{{ m.icono('check') }} Marcar como recogida</button>
+      </form>
+      <form method="post" action="{{ url_for('recolector.liberar', oferta_id=recojo.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--fantasma boton--sm" type="submit">Liberar</button>
+      </form>
+      {% endif %}
       {# recojo-acciones #}
     </div>
   </li>

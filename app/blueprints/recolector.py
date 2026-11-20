@@ -70,4 +70,44 @@ def recojos():
         (g.usuario["id"],),
     )
     return render_template("recolector/recojos.html", recojos=lista)
+def _oferta_asignada(oferta_id):
+    """Devuelve la oferta si existe y la aceptó el recolector actual; si no, 404 o 403."""
+    oferta = db.query("SELECT id, estado, recolector_id FROM ofertas WHERE id = %s", (oferta_id,), uno=True)
+    if oferta is None:
+        abort(404)
+    if oferta["recolector_id"] != g.usuario["id"]:
+        abort(403)
+    return oferta
+
+
+@bp.post("/ofertas/<int:oferta_id>/recogida")
+@rol_requerido("recolector")
+def marcar_recogida(oferta_id):
+    _oferta_asignada(oferta_id)
+    filas, _ = db.execute(
+        "UPDATE ofertas SET estado = 'Recogida', recogida_en = NOW() "
+        "WHERE id = %s AND recolector_id = %s AND estado = 'Aceptada'",
+        (oferta_id, g.usuario["id"]),
+    )
+    if filas:
+        flash("¡Recojo registrado! Gracias por darle una segunda vida a este material.", "exito")
+    else:
+        flash("Solo puedes cerrar ofertas aceptadas.", "error")
+    return redirect(url_for("recolector.recojos"))
+
+
+@bp.post("/ofertas/<int:oferta_id>/liberar")
+@rol_requerido("recolector")
+def liberar(oferta_id):
+    _oferta_asignada(oferta_id)
+    filas, _ = db.execute(
+        "UPDATE ofertas SET estado = 'Disponible', recolector_id = NULL, aceptada_en = NULL "
+        "WHERE id = %s AND recolector_id = %s AND estado = 'Aceptada'",
+        (oferta_id, g.usuario["id"]),
+    )
+    if filas:
+        flash("Liberaste la oferta: vuelve a estar disponible para otros recolectores.", "info")
+    else:
+        flash("Solo puedes liberar ofertas aceptadas.", "error")
+    return redirect(url_for("recolector.recojos"))
 # [rutas]
