@@ -40,6 +40,7 @@
             {% elif usuario.rol == 'recolector' %}
             {# nav-recolector #}
             {% elif usuario.rol == 'admin' %}
+            {{ m.enlace('admin.inicio', 'Administración', 'escudo') }}
             {# nav-admin #}
             {% endif %}
             {{ m.enlace('main.inicio', 'Mi panel', 'lista') }}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Administración{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <p class="saludo"><span class="rol">{{ m.icono('escudo') }} Administración</span></p>
+    <h1>Panel de administración</h1>
+    <p>Mantén al día el catálogo de materiales y el directorio de puntos de acopio.</p>
+  </div>
+</header>
+<div class="rejilla">
+  {# admin-tarjetas #}
+  <div class="tarjeta tarjeta-accion">
+    <span class="tarjeta-accion__icono">{{ m.icono('escudo') }}</span>
+    <h3>Permisos por rol</h3>
+    <p>Cada acción se valida en el servidor según el rol de quien la pide.</p>
+  </div>
+</div>
+{% endblock %}

@@ -19,6 +19,11 @@
   {% elif g.usuario.rol == 'recolector' %}
   {# panel-recolector #}
   {% else %}
+  <a class="tarjeta tarjeta-accion" href="{{ url_for('admin.inicio') }}">
+    <span class="tarjeta-accion__icono">{{ m.icono('escudo') }}</span>
+    <h3>Administración</h3>
+    <p>Catálogo de materiales y puntos de acopio.</p>
+  </a>
   {# panel-admin #}
   {% endif %}
   <div class="tarjeta tarjeta-accion">
