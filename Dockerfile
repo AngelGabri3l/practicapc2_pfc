@@ -4,6 +4,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1
 
+# Parches de seguridad del sistema y de pip al construir (la imagen base puede traer paquetes con correcciones pendientes)
+# hadolint ignore=DL3005,DL3013
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir --upgrade pip
+
 WORKDIR /srv
 
 COPY requirements.txt .
