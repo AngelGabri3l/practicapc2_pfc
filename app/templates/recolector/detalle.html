@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Recojo · {{ oferta.material }}{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>{{ oferta.material }} · {{ oferta.cantidad }}</h1>
+    <p>{{ m.estado(oferta.estado) }}</p>
+  </div>
+  <a class="boton boton--fantasma" href="{{ url_for('recolector.recojos') }}">Mis recojos</a>
+</header>
+<div class="detalle">
+  <section class="tarjeta">
+    <h2>Datos del recojo</h2>
+    <dl class="datos">
+      <div class="dato"><dt>Fecha</dt><dd>{{ oferta.fecha|fecha }}</dd></div>
+      <div class="dato"><dt>Ventana</dt><dd>{{ oferta.hora_inicio|hora }} a {{ oferta.hora_fin|hora }}</dd></div>
+      <div class="dato"><dt>Distrito</dt><dd>{{ oferta.distrito }}</dd></div>
+      {% if oferta.recogida_en %}<div class="dato"><dt>Recogida el</dt><dd>{{ oferta.recogida_en|fecha }}</dd></div>{% endif %}
+    </dl>
+  </section>
+  <aside class="resaltado">
+    <h2>{{ m.icono('pin') }} Dirección de recojo</h2>
+    <p><strong>{{ oferta.direccion }}</strong></p>
+    <p class="texto-suave">Contacto: {{ oferta.ciudadano.split(' ')[0] }}{% if oferta.telefono_ciudadano %} · {{ oferta.telefono_ciudadano }}{% endif %}</p>
+    <div class="acciones">
+      {% if oferta.estado == 'Aceptada' %}
+      <form method="post" action="{{ url_for('recolector.marcar_recogida', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--primario boton--sm" type="submit">{{ m.icono('check') }} Marcar como recogida</button>
+      </form>
+      <form method="post" action="{{ url_for('recolector.liberar', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--fantasma boton--sm" type="submit">Liberar</button>
+      </form>
+      {% endif %}
+      {# detalle-acciones #}
+    </div>
+  </aside>
+</div>
+{% endblock %}

@@ -7,6 +7,14 @@
     <p>Encuentra dónde entregar tus reciclables, qué recibe cada punto y cuándo atiende.</p>
   </div>
 </header>
+<form method="get" class="filtros" role="search" aria-label="Buscar puntos de acopio">
+  {{ m.selector('material', 'Material', materiales, material, vacio='Todos los materiales', requerido=False) }}
+  {{ m.selector('distrito', 'Distrito', distritos, distrito, vacio='Todos los distritos', requerido=False) }}
+  <div class="filtros__acciones">
+    <button class="boton boton--primario" type="submit">{{ m.icono('buscar') }} Buscar</button>
+    {% if filtrando %}<a class="boton boton--fantasma" href="{{ url_for('directorio.listado') }}">Limpiar filtros</a>{% endif %}
+  </div>
+</form>
 {# filtros #}
 {% if puntos %}
 <p class="texto-suave">{{ puntos|length }} {{ 'punto encontrado' if puntos|length == 1 else 'puntos encontrados' }}</p>
@@ -27,6 +35,13 @@
   </li>
   {% endfor %}
 </ul>
+{% elif filtrando %}
+<div class="vacio">
+  {{ m.icono('buscar') }}
+  <p><strong>Sin resultados</strong></p>
+  <p>Ningún punto cumple esos filtros. Prueba con otro material o distrito.</p>
+  <a class="boton boton--secundario" href="{{ url_for('directorio.listado') }}">Limpiar filtros</a>
+</div>
 {% else %}
 <div class="vacio">
   {{ m.icono('tienda') }}

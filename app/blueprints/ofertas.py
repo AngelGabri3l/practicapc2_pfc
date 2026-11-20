@@ -53,8 +53,18 @@ def nueva():
                  datos["fecha"], datos["hora_inicio"], datos["hora_fin"]),
             )
             flash("¡Publicado! Los recolectores de tu distrito ya pueden ver tu oferta.", "exito")
-            return redirect(url_for("main.inicio"))
+            return redirect(url_for("ofertas.mis"))
     opciones = [(material["id"], material["nombre"]) for material in materiales]
     return render_template("ofertas/nueva.html", datos=datos, errores=errores, materiales=opciones,
                            distritos=OPCIONES_DISTRITO, hoy=date.today().isoformat()), (422 if errores else 200)
+@bp.route("/mis")
+@rol_requerido("ciudadano")
+def mis():
+    lista = db.query(
+        "SELECT o.id, m.nombre AS material, o.cantidad, o.distrito, o.fecha, o.hora_inicio, o.hora_fin, o.estado "
+        "FROM ofertas o JOIN materiales m ON m.id = o.material_id "
+        "WHERE o.ciudadano_id = %s ORDER BY o.creado_en DESC, o.id DESC",
+        (g.usuario["id"],),
+    )
+    return render_template("ofertas/mis.html", ofertas=lista)
 # [rutas]

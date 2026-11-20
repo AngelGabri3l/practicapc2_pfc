@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Mis ofertas{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>Mis ofertas</h1>
+    <p>Sigue el estado de cada material que publicaste.</p>
+  </div>
+  <a class="boton boton--primario" href="{{ url_for('ofertas.nueva') }}">{{ m.icono('mas') }} Publicar material</a>
+</header>
+{% if ofertas %}
+<ul class="lista">
+  {% for oferta in ofertas %}
+  <li class="item">
+    <div class="item__cabecera">
+      <h2 class="item__titulo">{{ oferta.material }} · {{ oferta.cantidad }}</h2>
+      {{ m.estado(oferta.estado) }}
+    </div>
+    <ul class="meta">
+      <li>{{ m.icono('calendario') }} {{ oferta.fecha|fecha }}</li>
+      <li>{{ m.icono('reloj') }} {{ oferta.hora_inicio|hora }} a {{ oferta.hora_fin|hora }}</li>
+      <li>{{ m.icono('pin') }} {{ oferta.distrito }}</li>
+    </ul>
+    <div class="acciones">
+      {# oferta-acciones #}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="vacio">
+  {{ m.icono('caja') }}
+  <p><strong>Aún no tienes ofertas</strong></p>
+  <p>Publica el material que tengas y un recolector de tu distrito lo verá.</p>
+  <a class="boton boton--primario" href="{{ url_for('ofertas.nueva') }}">Publicar mi primer material</a>
+</div>
+{% endif %}
+{% endblock %}

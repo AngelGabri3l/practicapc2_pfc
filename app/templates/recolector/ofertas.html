@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}Ofertas disponibles{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>Ofertas en {{ g.usuario.distrito }}</h1>
+    <p>Material listo para recoger. La dirección exacta se muestra cuando aceptas.</p>
+  </div>
+  <a class="boton boton--secundario" href="{{ url_for('recolector.recojos') }}">{{ m.icono('camion') }} Mis recojos</a>
+  {# encabezado-acciones #}
+</header>
+{% if ofertas %}
+<ul class="lista lista--rejilla">
+  {% for oferta in ofertas %}
+  <li class="item">
+    <div class="item__cabecera">
+      <h2 class="item__titulo">{{ oferta.material }} · {{ oferta.cantidad }}</h2>
+      {{ m.estado('Disponible') }}
+    </div>
+    <ul class="meta">
+      <li>{{ m.icono('calendario') }} {{ oferta.fecha|fecha }}</li>
+      <li>{{ m.icono('reloj') }} {{ oferta.hora_inicio|hora }} a {{ oferta.hora_fin|hora }}</li>
+      <li>{{ m.icono('escudo') }} Dirección visible al aceptar</li>
+    </ul>
+    <div class="acciones">
+      <form method="post" action="{{ url_for('recolector.aceptar', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--primario boton--sm" type="submit">{{ m.icono('check') }} Aceptar recojo</button>
+      </form>
+      {# oferta-acciones #}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="vacio">
+  {{ m.icono('camion') }}
+  <p><strong>No hay ofertas disponibles en tu distrito</strong></p>
+  <p>Vuelve más tarde: las nuevas publicaciones aparecen aquí al instante.</p>
+</div>
+{% endif %}
+{% endblock %}
