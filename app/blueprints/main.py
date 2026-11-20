@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, render_template
 
 from .. import db
+from ..catalogos import OPCIONES_DISTRITO
 from ..security import login_requerido
 # [imports]
 
@@ -10,7 +11,8 @@ bp = Blueprint("main", __name__)
 
 @bp.route("/")
 def index():
-    return render_template("index.html")
+    materiales = [(fila["id"], fila["nombre"]) for fila in db.query("SELECT id, nombre FROM materiales ORDER BY nombre")]
+    return render_template("index.html", materiales=materiales, distritos=OPCIONES_DISTRITO)
 
 
 @bp.route("/health")
