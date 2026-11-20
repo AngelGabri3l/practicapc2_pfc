@@ -42,8 +42,17 @@
             {% elif usuario.rol == 'admin' %}
             {# nav-admin #}
             {% endif %}
+            {{ m.enlace('main.inicio', 'Mi panel', 'lista') }}
+            <li class="nav__usuario">{{ m.icono('usuario') }} {{ usuario.nombre.split(' ')[0] }}</li>
+            <li>
+              <form class="nav__form" method="post" action="{{ url_for('auth.logout') }}">
+                {{ m.csrf() }}
+                <button class="nav__boton" type="submit">{{ m.icono('salir') }} Salir</button>
+              </form>
+            </li>
             {# nav-sesion #}
           {% else %}
+            {{ m.enlace('auth.login', 'Ingresar') }}
             <li><a class="nav__enlace nav__destacado" href="{{ url_for('auth.registro') }}">Crear cuenta</a></li>
             {# nav-anonimo #}
           {% endif %}

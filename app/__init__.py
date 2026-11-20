@@ -3,7 +3,7 @@ from flask import Flask, render_template
 
 from . import db, filtros
 from .config import Config
-from .security import csrf_token, validar_csrf
+from .security import cargar_usuario, csrf_token, validar_csrf
 # [imports]
 
 CSP = ("default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; "
@@ -34,6 +34,7 @@ def create_app(ajustes=None):
 
     app.teardown_appcontext(db.close_db)
     app.before_request(validar_csrf)
+    app.before_request(cargar_usuario)
     # [antes-de-peticion]
     app.jinja_env.globals["csrf_token"] = csrf_token
     filtros.registrar(app)
