@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% set titulo_pagina = 'Nuevo punto de acopio' if modo == 'nuevo' else 'Editar punto de acopio' %}
+{% block titulo %}{{ titulo_pagina }}{% endblock %}
+{% block contenido %}
+<div class="panel-form">
+  <header class="encabezado">
+    <div>
+      <h1>{{ titulo_pagina }}</h1>
+      <p>Estos datos se muestran en el directorio público.</p>
+    </div>
+  </header>
+  <form method="post" class="tarjeta formulario">
+    {{ m.csrf() }}
+    {{ m.campo('nombre', 'Nombre del punto', datos.nombre, errores.nombre, ayuda='Por ejemplo: Centro de acopio del parque central.') }}
+    {{ m.campo('direccion', 'Dirección', datos.direccion, errores.direccion, autocomplete='street-address') }}
+    {{ m.selector('distrito', 'Distrito', distritos, datos.distrito, errores.distrito, vacio='Elige el distrito') }}
+    <div class="pie-form">
+      <a class="boton boton--fantasma" href="{{ url_for('admin.puntos') }}">Cancelar</a>
+      <button class="boton boton--primario" type="submit">{{ 'Registrar punto' if modo == 'nuevo' else 'Guardar cambios' }}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titulo %}Puntos de acopio{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>Puntos de acopio</h1>
+    <p>Registra los puntos y mantén su información al día.</p>
+  </div>
+  <div class="acciones">
+    <a class="boton boton--fantasma" href="{{ url_for('admin.inicio') }}">Volver al panel</a>
+    <a class="boton boton--primario" href="{{ url_for('admin.punto_nuevo') }}">{{ m.icono('mas') }} Nuevo punto</a>
+  </div>
+</header>
+{% if puntos %}
+<ul class="lista lista--rejilla">
+  {% for punto in puntos %}
+  <li class="item">
+    <div class="item__cabecera">
+      <h2 class="item__titulo">{{ punto.nombre }}</h2>
+      {% if punto.activo %}<span class="estado estado--disponible">Activo</span>{% else %}<span class="estado estado--inactivo">Inactivo</span>{% endif %}
+    </div>
+    <ul class="meta">
+      <li>{{ m.icono('pin') }} {{ punto.direccion }}</li>
+      <li>{{ m.icono('tienda') }} {{ punto.distrito }}</li>
+    </ul>
+    <div class="acciones">
+      {# punto-acciones #}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="vacio">
+  {{ m.icono('tienda') }}
+  <p><strong>Todavía no hay puntos de acopio</strong></p>
+  <p>Registra el primero para que aparezca en el directorio.</p>
+</div>
+{% endif %}
+{% endblock %}
