@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block titulo %}{{ punto.nombre }}{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>{{ punto.nombre }}</h1>
+    <p>{{ m.icono('pin') }} {{ punto.direccion }} · {{ punto.distrito }}</p>
+  </div>
+  <a class="boton boton--fantasma" href="{{ url_for('directorio.listado') }}">Volver al directorio</a>
+</header>
+<div class="detalle">
+  <section class="tarjeta">
+    <h2>{{ m.icono('reloj') }} Horario de atención</h2>
+    {% if horarios %}
+    <table class="tabla">
+      <thead><tr><th scope="col">Día</th><th scope="col">Horario</th></tr></thead>
+      <tbody>
+        {% for numero, nombre in dias %}
+        <tr>
+          <th scope="row">{{ nombre }}</th>
+          <td>{% if numero in horarios %}{{ horarios[numero].apertura|hora }} a {{ horarios[numero].cierre|hora }}{% else %}<span class="texto-suave">Cerrado</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="texto-suave">Horario no informado.</p>
+    {% endif %}
+  </section>
+  <aside class="resaltado">
+    <h2>Materiales que recibe</h2>
+    {% if materiales %}
+    <ul class="chips">{% for material in materiales %}<li class="chip">{{ material.nombre }}</li>{% endfor %}</ul>
+    {% else %}
+    <p>Este punto aún no informó qué materiales recibe.</p>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

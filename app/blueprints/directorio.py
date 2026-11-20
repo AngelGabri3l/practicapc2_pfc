@@ -2,7 +2,7 @@
 from flask import Blueprint, abort, render_template, request
 
 from .. import db
-from ..catalogos import DISTRITOS, OPCIONES_DISTRITO
+from ..catalogos import DIAS, DISTRITOS, OPCIONES_DISTRITO
 # [imports]
 
 bp = Blueprint("directorio", __name__, url_prefix="/puntos")
@@ -33,4 +33,16 @@ def listado():
     materiales = [(fila["id"], fila["nombre"]) for fila in db.query("SELECT id, nombre FROM materiales ORDER BY nombre")]
     return render_template("directorio/listado.html", puntos=puntos, materiales=materiales, distritos=OPCIONES_DISTRITO,
                            distrito=distrito, material=str(material_id or ""), filtrando=bool(distrito or material_id))
+@bp.route("/<int:punto_id>")
+def detalle(punto_id):
+    punto = db.query("SELECT id, nombre, direccion, distrito FROM puntos_acopio WHERE id = %s AND activo = 1",
+                     (punto_id,), uno=True)
+    if punto is None:
+        abort(404)
+    materiales = db.query(
+        "SELECT m.nombre FROM punto_material pm JOIN materiales m ON m.id = pm.material_id "
+        "WHERE pm.punto_id = %s ORDER BY m.nombre", (punto_id,))
+    horarios = {fila["dia"]: fila for fila in db.query(
+        "SELECT dia, apertura, cierre FROM horarios WHERE punto_id = %s ORDER BY dia", (punto_id,))}
+    return render_template("directorio/detalle.html", punto=punto, materiales=materiales, horarios=horarios, dias=DIAS)
 # [rutas]
