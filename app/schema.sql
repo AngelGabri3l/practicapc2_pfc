@@ -48,4 +48,21 @@ CREATE TABLE IF NOT EXISTS ofertas (
   CONSTRAINT fk_oferta_material FOREIGN KEY (material_id) REFERENCES materiales (id),
   CONSTRAINT fk_oferta_recolector FOREIGN KEY (recolector_id) REFERENCES usuarios (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS punto_material (
+  punto_id INT NOT NULL,
+  material_id INT NOT NULL,
+  PRIMARY KEY (punto_id, material_id),
+  CONSTRAINT fk_pm_punto FOREIGN KEY (punto_id) REFERENCES puntos_acopio (id) ON DELETE CASCADE,
+  CONSTRAINT fk_pm_material FOREIGN KEY (material_id) REFERENCES materiales (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS horarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  punto_id INT NOT NULL,
+  dia TINYINT NOT NULL,
+  apertura TIME NOT NULL,
+  cierre TIME NOT NULL,
+  UNIQUE KEY uq_horario_dia (punto_id, dia),
+  CONSTRAINT fk_horario_punto FOREIGN KEY (punto_id) REFERENCES puntos_acopio (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- [fin-esquema]
