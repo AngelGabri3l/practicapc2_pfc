@@ -22,6 +22,10 @@
       <li>{{ m.icono('escudo') }} Dirección visible al aceptar</li>
     </ul>
     <div class="acciones">
+      <form method="post" action="{{ url_for('recolector.aceptar', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--primario boton--sm" type="submit">{{ m.icono('check') }} Aceptar recojo</button>
+      </form>
       {# oferta-acciones #}
     </div>
   </li>
