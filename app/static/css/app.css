@@ -247,3 +247,5 @@ fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 .horario__hora { display: grid; gap: .25rem; font-size: .9rem; color: var(--tinta-suave); }
+.busqueda-rapida { display: grid; gap: .6rem; max-width: 640px; padding: .75rem; background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); box-shadow: var(--sombra); }
+@media (min-width: 640px) { .busqueda-rapida { grid-template-columns: 1fr 1fr auto; } }

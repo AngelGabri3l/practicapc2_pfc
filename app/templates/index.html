@@ -11,6 +11,19 @@
       <a class="boton boton--secundario" href="{{ url_for('directorio.listado') }}">{{ m.icono('pin') }} Ver puntos de acopio</a>
       {# inicio-cta #}
     </div>
+    <form class="busqueda-rapida" method="get" action="{{ url_for('directorio.listado') }}" role="search" aria-label="Buscar puntos de acopio">
+      <label class="sr-only" for="b-material">Material</label>
+      <select id="b-material" name="material">
+        <option value="">¿Qué quieres reciclar?</option>
+        {% for valor, texto in materiales %}<option value="{{ valor }}">{{ texto }}</option>{% endfor %}
+      </select>
+      <label class="sr-only" for="b-distrito">Distrito</label>
+      <select id="b-distrito" name="distrito">
+        <option value="">¿En qué distrito?</option>
+        {% for valor, texto in distritos %}<option value="{{ valor }}">{{ texto }}</option>{% endfor %}
+      </select>
+      <button class="boton boton--primario" type="submit">{{ m.icono('buscar') }} Buscar</button>
+    </form>
     {# inicio-busqueda #}
   </div>
   <div class="hero__arte" aria-hidden="true">
