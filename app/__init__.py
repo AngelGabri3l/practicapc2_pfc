@@ -45,6 +45,8 @@ def create_app(ajustes=None):
     app.register_blueprint(auth.bp)
     from .blueprints import admin
     app.register_blueprint(admin.bp)
+    from .blueprints import ofertas
+    app.register_blueprint(ofertas.bp)
     # [blueprints]
 
     @app.after_request
