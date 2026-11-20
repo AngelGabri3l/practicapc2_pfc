@@ -132,4 +132,36 @@ def punto_materiales_horarios(punto_id):
             "SELECT dia, apertura, cierre FROM horarios WHERE punto_id = %s", (punto_id,))}
     return render_template("admin/punto_materiales.html", punto=punto, materiales=materiales, dias=DIAS,
                            elegidos=elegidos, horas=horas, errores=errores), (422 if errores else 200)
+@bp.route("/puntos/<int:punto_id>/editar", methods=["GET", "POST"])
+@rol_requerido("admin")
+def punto_editar(punto_id):
+    punto = db.query("SELECT id, nombre, direccion, distrito FROM puntos_acopio WHERE id = %s", (punto_id,), uno=True)
+    if punto is None:
+        abort(404)
+    datos, errores = {campo: punto[campo] for campo in ("nombre", "direccion", "distrito")}, {}
+    if request.method == "POST":
+        datos = _datos_punto()
+        errores = _validar_punto(datos)
+        if not errores:
+            db.execute("UPDATE puntos_acopio SET nombre = %s, direccion = %s, distrito = %s WHERE id = %s",
+                       (datos["nombre"], datos["direccion"], datos["distrito"], punto_id))
+            flash("Guardaste los cambios del punto.", "exito")
+            return redirect(url_for("admin.puntos"))
+    return render_template("admin/punto_form.html", datos=datos, errores=errores, distritos=OPCIONES_DISTRITO,
+                           modo="editar"), (422 if errores else 200)
+
+
+@bp.post("/puntos/<int:punto_id>/estado")
+@rol_requerido("admin")
+def punto_estado(punto_id):
+    if db.query("SELECT id FROM puntos_acopio WHERE id = %s", (punto_id,), uno=True) is None:
+        abort(404)
+    activo = 1 if request.form.get("activo") == "1" else 0
+    # Baja lógica: el registro se conserva y solo cambia su estado.
+    db.execute("UPDATE puntos_acopio SET activo = %s WHERE id = %s", (activo, punto_id))
+    if activo:
+        flash("Reactivaste el punto: vuelve a aparecer en el directorio.", "exito")
+    else:
+        flash("Desactivaste el punto: ya no aparece en el directorio.", "info")
+    return redirect(url_for("admin.puntos"))
 # [rutas]
