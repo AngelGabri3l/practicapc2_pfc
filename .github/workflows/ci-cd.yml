@@ -15,6 +15,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  secrets-scan:
+    name: Gitleaks (secretos)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # [jobs-seguridad]
   test:
     name: Pruebas con MySQL
