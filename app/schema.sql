@@ -19,4 +19,13 @@ CREATE TABLE IF NOT EXISTS materiales (
 
 INSERT IGNORE INTO materiales (nombre) VALUES
   ('Papel'), ('Cartón'), ('Plástico'), ('Vidrio'), ('Metal'), ('Electrónicos');
+CREATE TABLE IF NOT EXISTS puntos_acopio (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL,
+  direccion VARCHAR(200) NOT NULL,
+  distrito VARCHAR(60) NOT NULL,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_puntos_distrito (distrito, activo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- [fin-esquema]
