@@ -46,10 +46,10 @@
   </a>
   {# panel-admin #}
   {% endif %}
-  <div class="tarjeta tarjeta-accion">
+  <a class="tarjeta tarjeta-accion" href="{{ url_for('auth.perfil') }}">
     <span class="tarjeta-accion__icono">{{ m.icono('usuario') }}</span>
     <h3>Tu cuenta</h3>
-    <p>{{ g.usuario.email }} · {{ g.usuario.distrito }}</p>
-  </div>
+    <p>{{ g.usuario.email }} · {{ g.usuario.distrito }}. Edita tus datos.</p>
+  </a>
 </div>
 {% endblock %}
