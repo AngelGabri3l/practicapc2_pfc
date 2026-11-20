@@ -45,6 +45,10 @@ def create_app(ajustes=None):
     app.register_blueprint(auth.bp)
     from .blueprints import admin
     app.register_blueprint(admin.bp)
+    from .blueprints import ofertas
+    app.register_blueprint(ofertas.bp)
+    from .blueprints import directorio
+    app.register_blueprint(directorio.bp)
     # [blueprints]
 
     @app.after_request
@@ -61,5 +65,6 @@ def create_app(ajustes=None):
     with app.app_context():
         db.init_schema()
         seed.crear_admin_inicial()
+        seed.crear_datos_demo()
         # [semillas]
     return app

@@ -78,4 +78,46 @@ def iniciar_sesion(post):
         assert respuesta.status_code == 302, "no se pudo iniciar sesión"
         return respuesta
     return entrar
+@pytest.fixture
+def entrar_como(app, crear_usuario, iniciar_sesion):
+    """Crea un usuario con el rol indicado, inicia sesión y devuelve (cliente, id)."""
+    contador = {"n": 0}
+
+    def entrar(rol, distrito="Miraflores", **datos):
+        contador["n"] += 1
+        email = datos.pop("email", f"{rol}{contador['n']}@example.com")
+        usuario_id = crear_usuario(email, rol=rol, distrito=distrito, **datos)
+        cliente = app.test_client()
+        iniciar_sesion(cliente, email)
+        return cliente, usuario_id
+    return entrar
+
+
+@pytest.fixture
+def crear_punto(app):
+    def crear(nombre="Punto de prueba", direccion="Calle Ficticia 100", distrito="Miraflores", activo=1):
+        with app.app_context():
+            _, punto_id = bd.execute(
+                "INSERT INTO puntos_acopio (nombre, direccion, distrito, activo) VALUES (%s, %s, %s, %s)",
+                (nombre, direccion, distrito, activo),
+            )
+        return punto_id
+    return crear
+@pytest.fixture
+def crear_oferta(app):
+    """Crea una oferta directamente en la base y devuelve su id."""
+    from datetime import date, timedelta
+
+    def crear(ciudadano_id, material="Cartón", distrito="Miraflores", estado="Disponible", recolector_id=None,
+              direccion="Calle Ficticia 742"):
+        manana = date.today() + timedelta(days=1)
+        with app.app_context():
+            material_id = bd.query("SELECT id FROM materiales WHERE nombre = %s", (material,), uno=True)["id"]
+            _, oferta_id = bd.execute(
+                "INSERT INTO ofertas (ciudadano_id, material_id, cantidad, direccion, distrito, fecha, hora_inicio, "
+                "hora_fin, estado, recolector_id) VALUES (%s, %s, '2 bolsas', %s, %s, %s, '09:00', '12:00', %s, %s)",
+                (ciudadano_id, material_id, direccion, distrito, manana, estado, recolector_id),
+            )
+        return oferta_id
+    return crear
 # [fixtures]

@@ -14,6 +14,11 @@
     <h3>Catálogo de materiales</h3>
     <p>Papel, cartón, plástico, vidrio, metal, electrónicos y más.</p>
   </a>
+  <a class="tarjeta tarjeta-accion" href="{{ url_for('admin.puntos') }}">
+    <span class="tarjeta-accion__icono">{{ m.icono('tienda') }}</span>
+    <h3>Puntos de acopio</h3>
+    <p>Registra puntos, sus materiales y horarios.</p>
+  </a>
   {# admin-tarjetas #}
   <div class="tarjeta tarjeta-accion">
     <span class="tarjeta-accion__icono">{{ m.icono('escudo') }}</span>
