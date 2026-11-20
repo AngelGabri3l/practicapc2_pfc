@@ -27,6 +27,11 @@
   </a>
   {# panel-ciudadano #}
   {% elif g.usuario.rol == 'recolector' %}
+  <a class="tarjeta tarjeta-accion" href="{{ url_for('recolector.ofertas') }}">
+    <span class="tarjeta-accion__icono">{{ m.icono('buscar') }}</span>
+    <h3>Ofertas de mi distrito</h3>
+    <p>Material disponible para recoger cerca de ti.</p>
+  </a>
   {# panel-recolector #}
   {% else %}
   <a class="tarjeta tarjeta-accion" href="{{ url_for('admin.inicio') }}">

@@ -49,6 +49,8 @@ def create_app(ajustes=None):
     app.register_blueprint(ofertas.bp)
     from .blueprints import directorio
     app.register_blueprint(directorio.bp)
+    from .blueprints import recolector
+    app.register_blueprint(recolector.bp)
     # [blueprints]
 
     @app.after_request

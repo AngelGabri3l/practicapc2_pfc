@@ -41,6 +41,7 @@
             {{ m.enlace('ofertas.mis', 'Mis ofertas', 'caja') }}
             {# nav-ciudadano #}
             {% elif usuario.rol == 'recolector' %}
+            {{ m.enlace('recolector.ofertas', 'Ofertas', 'buscar') }}
             {# nav-recolector #}
             {% elif usuario.rol == 'admin' %}
             {{ m.enlace('admin.inicio', 'Administración', 'escudo') }}
