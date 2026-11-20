@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, render_template
 
 from .. import db
+from ..security import login_requerido
 # [imports]
 
 bp = Blueprint("main", __name__)
@@ -19,4 +20,8 @@ def health():
     except Exception:  # cualquier fallo de la base se informa como 503
         return jsonify(status="error", db="down"), 503
     return jsonify(status="ok", db="ok")
+@bp.route("/inicio")
+@login_requerido
+def inicio():
+    return render_template("inicio.html")
 # [rutas]

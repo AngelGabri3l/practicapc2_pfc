@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %}Mi panel{% endblock %}
+{% block contenido %}
+{% set nombres_rol = {'ciudadano': 'Panel del ciudadano', 'recolector': 'Panel del recolector', 'admin': 'Panel de administración'} %}
+<header class="encabezado">
+  <div>
+    <p class="saludo"><span class="rol">{{ m.icono('usuario') }} {{ nombres_rol[g.usuario.rol] }}</span></p>
+    <h1>Hola, {{ g.usuario.nombre.split(' ')[0] }}</h1>
+    <p>
+      {% if g.usuario.rol == 'ciudadano' %}Publica tu material reciclable y sigue su recojo.
+      {% elif g.usuario.rol == 'recolector' %}Mira las ofertas de {{ g.usuario.distrito }} y organiza tus recojos.
+      {% else %}Gestiona el catálogo de materiales y los puntos de acopio.{% endif %}
+    </p>
+  </div>
+</header>
+<div class="rejilla">
+  {% if g.usuario.rol == 'ciudadano' %}
+  {# panel-ciudadano #}
+  {% elif g.usuario.rol == 'recolector' %}
+  {# panel-recolector #}
+  {% else %}
+  <a class="tarjeta tarjeta-accion" href="{{ url_for('admin.inicio') }}">
+    <span class="tarjeta-accion__icono">{{ m.icono('escudo') }}</span>
+    <h3>Administración</h3>
+    <p>Catálogo de materiales y puntos de acopio.</p>
+  </a>
+  {# panel-admin #}
+  {% endif %}
+  <div class="tarjeta tarjeta-accion">
+    <span class="tarjeta-accion__icono">{{ m.icono('usuario') }}</span>
+    <h3>Tu cuenta</h3>
+    <p>{{ g.usuario.email }} · {{ g.usuario.distrito }}</p>
+  </div>
+</div>
+{% endblock %}

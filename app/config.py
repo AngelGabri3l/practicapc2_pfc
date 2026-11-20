@@ -19,4 +19,6 @@ class Config:
     SESSION_COOKIE_SECURE = _booleano("SESSION_COOKIE_SECURE")
     PERMANENT_SESSION_LIFETIME = timedelta(hours=8)
     MAX_CONTENT_LENGTH = 1024 * 1024
+    ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "")
+    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
     # [config]

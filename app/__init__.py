@@ -1,9 +1,9 @@
 """Fábrica de la aplicación ReciclaRed."""
 from flask import Flask, render_template
 
-from . import db, filtros
+from . import db, filtros, seed
 from .config import Config
-from .security import csrf_token, validar_csrf
+from .security import cargar_usuario, csrf_token, validar_csrf
 # [imports]
 
 CSP = ("default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; "
@@ -34,12 +34,17 @@ def create_app(ajustes=None):
 
     app.teardown_appcontext(db.close_db)
     app.before_request(validar_csrf)
+    app.before_request(cargar_usuario)
     # [antes-de-peticion]
     app.jinja_env.globals["csrf_token"] = csrf_token
     filtros.registrar(app)
 
     from .blueprints import main
     app.register_blueprint(main.bp)
+    from .blueprints import auth
+    app.register_blueprint(auth.bp)
+    from .blueprints import admin
+    app.register_blueprint(admin.bp)
     # [blueprints]
 
     @app.after_request
@@ -55,5 +60,6 @@ def create_app(ajustes=None):
 
     with app.app_context():
         db.init_schema()
+        seed.crear_admin_inicial()
         # [semillas]
     return app

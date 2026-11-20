@@ -1,0 +1,4 @@
+# Excepción de riesgo documentada. Revisar antes de la fecha de expiración.
+# CVE-2025-47273: path traversal en setuptools (PackageIndex), versión 70.3.0.
+# No proviene de requirements.txt (pip-audit pasa) y la aplicación no importa setuptools.
+CVE-2025-47273 exp:2027-02-01
