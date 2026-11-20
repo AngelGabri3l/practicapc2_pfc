@@ -67,4 +67,39 @@ def mis():
         (g.usuario["id"],),
     )
     return render_template("ofertas/mis.html", ofertas=lista)
+@bp.route("/<int:oferta_id>")
+@rol_requerido("ciudadano")
+def detalle(oferta_id):
+    oferta = db.query(
+        "SELECT o.id, o.ciudadano_id, m.nombre AS material, o.cantidad, o.direccion, o.distrito, o.fecha, "
+        "o.hora_inicio, o.hora_fin, o.estado, o.recolector_id, o.recogida_en "
+        "FROM ofertas o JOIN materiales m ON m.id = o.material_id WHERE o.id = %s",
+        (oferta_id,), uno=True,
+    )
+    if oferta is None:
+        abort(404)
+    if oferta["ciudadano_id"] != g.usuario["id"]:
+        abort(403)
+    recolector = None
+    # Privacidad: los datos del recolector solo se muestran si aceptó esta oferta.
+    if oferta["estado"] in ("Aceptada", "Recogida") and oferta["recolector_id"]:
+        recolector = db.query("SELECT nombre, telefono FROM usuarios WHERE id = %s", (oferta["recolector_id"],), uno=True)
+    return render_template("ofertas/detalle.html", oferta=oferta, recolector=recolector)
+@bp.post("/<int:oferta_id>/cancelar")
+@rol_requerido("ciudadano")
+def cancelar(oferta_id):
+    oferta = db.query("SELECT ciudadano_id FROM ofertas WHERE id = %s", (oferta_id,), uno=True)
+    if oferta is None:
+        abort(404)
+    if oferta["ciudadano_id"] != g.usuario["id"]:
+        abort(403)
+    filas, _ = db.execute(
+        "UPDATE ofertas SET estado = 'Cancelada' WHERE id = %s AND ciudadano_id = %s AND estado = 'Disponible'",
+        (oferta_id, g.usuario["id"]),
+    )
+    if filas:
+        flash("Cancelaste la oferta. Ya no aparece para los recolectores.", "info")
+    else:
+        flash("Solo puedes cancelar ofertas disponibles: esta ya fue aceptada o recogida.", "error")
+    return redirect(url_for("ofertas.mis"))
 # [rutas]

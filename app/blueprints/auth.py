@@ -1,12 +1,13 @@
 """Registro, inicio de sesión y perfil de usuario."""
 import secrets
 
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
 from pymysql.err import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db
 from ..catalogos import DISTRITOS, EMAIL_RE, OPCIONES_DISTRITO, ROLES_REGISTRO, TELEFONO_RE
+from ..security import login_requerido
 # [imports]
 
 bp = Blueprint("auth", __name__)
@@ -88,4 +89,25 @@ def logout():
     session.clear()
     flash("Cerraste sesión. ¡Hasta pronto!", "info")
     return redirect(url_for("main.index"))
+@bp.route("/perfil", methods=["GET", "POST"])
+@login_requerido
+def perfil():
+    # Siempre se edita el usuario de la sesión: la petición no acepta un id de usuario.
+    datos = {"nombre": g.usuario["nombre"], "telefono": g.usuario["telefono"] or "", "distrito": g.usuario["distrito"]}
+    errores = {}
+    if request.method == "POST":
+        datos = {campo: " ".join(request.form.get(campo, "").split()) for campo in datos}
+        if not 2 <= len(datos["nombre"]) <= 100:
+            errores["nombre"] = "Escribe tu nombre (de 2 a 100 caracteres)."
+        if datos["telefono"] and not TELEFONO_RE.match(datos["telefono"]):
+            errores["telefono"] = "Usa solo números (de 7 a 15 dígitos)."
+        if datos["distrito"] not in DISTRITOS:
+            errores["distrito"] = "Elige tu distrito."
+        if not errores:
+            db.execute("UPDATE usuarios SET nombre = %s, telefono = %s, distrito = %s WHERE id = %s",
+                       (datos["nombre"], datos["telefono"] or None, datos["distrito"], g.usuario["id"]))
+            flash("Guardaste los cambios de tu perfil.", "exito")
+            return redirect(url_for("auth.perfil"))
+    return render_template("auth/perfil.html", datos=datos, errores=errores, distritos=OPCIONES_DISTRITO), \
+        (422 if errores else 200)
 # [rutas]

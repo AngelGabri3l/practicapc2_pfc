@@ -49,7 +49,7 @@
             {# nav-admin #}
             {% endif %}
             {{ m.enlace('main.inicio', 'Mi panel', 'lista') }}
-            <li class="nav__usuario">{{ m.icono('usuario') }} {{ usuario.nombre.split(' ')[0] }}</li>
+            {{ m.enlace('auth.perfil', usuario.nombre.split(' ')[0], 'usuario') }}
             <li>
               <form class="nav__form" method="post" action="{{ url_for('auth.logout') }}">
                 {{ m.csrf() }}

@@ -25,6 +25,12 @@
     </ul>
     <div class="acciones">
       <a class="boton boton--secundario boton--sm" href="{{ url_for('admin.punto_materiales_horarios', punto_id=punto.id) }}">{{ m.icono('reloj') }} Materiales y horarios</a>
+      <a class="boton boton--secundario boton--sm" href="{{ url_for('admin.punto_editar', punto_id=punto.id) }}">Editar</a>
+      <form method="post" action="{{ url_for('admin.punto_estado', punto_id=punto.id) }}">
+        {{ m.csrf() }}
+        <input type="hidden" name="activo" value="{{ 0 if punto.activo else 1 }}">
+        <button class="boton boton--sm {{ 'boton--peligro' if punto.activo else 'boton--primario' }}" type="submit">{{ 'Desactivar' if punto.activo else 'Reactivar' }}</button>
+      </form>
       {# punto-acciones #}
     </div>
   </li>

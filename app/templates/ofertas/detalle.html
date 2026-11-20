@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Oferta · {{ oferta.material }}{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>{{ oferta.material }} · {{ oferta.cantidad }}</h1>
+    <p>{{ m.estado(oferta.estado) }}</p>
+  </div>
+  <a class="boton boton--fantasma" href="{{ url_for('ofertas.mis') }}">Mis ofertas</a>
+</header>
+<div class="detalle">
+  <section class="tarjeta">
+    <h2>Datos de la oferta</h2>
+    <dl class="datos">
+      <div class="dato"><dt>Dirección</dt><dd>{{ oferta.direccion }}</dd></div>
+      <div class="dato"><dt>Distrito</dt><dd>{{ oferta.distrito }}</dd></div>
+      <div class="dato"><dt>Fecha</dt><dd>{{ oferta.fecha|fecha }}</dd></div>
+      <div class="dato"><dt>Ventana</dt><dd>{{ oferta.hora_inicio|hora }} a {{ oferta.hora_fin|hora }}</dd></div>
+    </dl>
+  </section>
+  <aside class="resaltado">
+    <h2>{{ m.icono('camion') }} Recolector</h2>
+    {% if recolector %}
+    <p><strong>{{ recolector.nombre }}</strong></p>
+    <p>{% if recolector.telefono %}{{ m.icono('telefono') }} {{ recolector.telefono }}{% else %}Sin teléfono registrado{% endif %}</p>
+    {% else %}
+    <p>Aún ningún recolector aceptó esta oferta. Te avisamos aquí cuando ocurra.</p>
+    {% endif %}
+    <div class="acciones">
+      {% if oferta.estado == 'Disponible' %}
+      <form method="post" action="{{ url_for('ofertas.cancelar', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--peligro boton--sm" type="submit">Cancelar oferta</button>
+      </form>
+      {% endif %}
+      {# detalle-acciones #}
+    </div>
+  </aside>
+</div>
+{% endblock %}

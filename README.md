@@ -65,4 +65,8 @@ Cada push a `main` (es decir, cada Pull Request de release desde `test`) ejecuta
 
 El administrador inicial se crea con el correo `admin@reciclared.local` (configurable con `ADMIN_EMAIL`).
 
+## Operación
+
+Monitoreo, alarmas y respaldos: ver [docs/operacion.md](docs/operacion.md).
+
 <!-- [secciones] -->
