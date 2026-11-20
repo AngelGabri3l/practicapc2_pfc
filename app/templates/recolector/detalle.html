@@ -23,6 +23,16 @@
     <p><strong>{{ oferta.direccion }}</strong></p>
     <p class="texto-suave">Contacto: {{ oferta.ciudadano.split(' ')[0] }}{% if oferta.telefono_ciudadano %} · {{ oferta.telefono_ciudadano }}{% endif %}</p>
     <div class="acciones">
+      {% if oferta.estado == 'Aceptada' %}
+      <form method="post" action="{{ url_for('recolector.marcar_recogida', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--primario boton--sm" type="submit">{{ m.icono('check') }} Marcar como recogida</button>
+      </form>
+      <form method="post" action="{{ url_for('recolector.liberar', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--fantasma boton--sm" type="submit">Liberar</button>
+      </form>
+      {% endif %}
       {# detalle-acciones #}
     </div>
   </aside>
