@@ -22,7 +22,7 @@
   {% for punto in puntos %}
   <li class="item">
     <div class="item__cabecera">
-      <h2 class="item__titulo">{{ punto.nombre }}</h2>
+      <h2 class="item__titulo"><a href="{{ url_for('directorio.detalle', punto_id=punto.id) }}">{{ punto.nombre }}</a></h2>
       <span class="chip">{{ m.icono('pin') }} {{ punto.distrito }}</span>
     </div>
     <ul class="meta"><li>{{ m.icono('tienda') }} {{ punto.direccion }}</li></ul>
@@ -31,6 +31,7 @@
       {% for material in punto.materiales.split(', ') %}<li class="chip">{{ material }}</li>{% endfor %}
     </ul>
     {% endif %}
+    <a class="boton boton--secundario boton--sm" href="{{ url_for('directorio.detalle', punto_id=punto.id) }}">{{ m.icono('reloj') }} Ver horario y detalle</a>
     {# punto-enlace #}
   </li>
   {% endfor %}
