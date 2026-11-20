@@ -65,5 +65,6 @@ def create_app(ajustes=None):
     with app.app_context():
         db.init_schema()
         seed.crear_admin_inicial()
+        seed.crear_datos_demo()
         # [semillas]
     return app
