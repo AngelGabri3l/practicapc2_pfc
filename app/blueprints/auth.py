@@ -1,7 +1,9 @@
 """Registro, inicio de sesión y perfil de usuario."""
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+import secrets
+
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from pymysql.err import IntegrityError
-from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from .. import db
 from ..catalogos import DISTRITOS, EMAIL_RE, OPCIONES_DISTRITO, ROLES_REGISTRO, TELEFONO_RE
@@ -53,4 +55,37 @@ def registro():
                 return redirect(url_for("main.index"))
     codigo = 422 if errores else 200
     return render_template("auth/registro.html", datos=datos, errores=errores, distritos=OPCIONES_DISTRITO), codigo
+# Hash aleatorio para comparar aunque el correo no exista (mismo tiempo de respuesta).
+_HASH_FICTICIO = generate_password_hash(secrets.token_hex(16))
+
+
+def _destino_seguro(destino):
+    if destino and destino.startswith("/") and not destino.startswith("//"):
+        return destino
+    return url_for("main.inicio")
+
+
+@bp.route("/login", methods=["GET", "POST"])
+def login():
+    email = ""
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        usuario = db.query("SELECT id, password_hash FROM usuarios WHERE email = %s", (email,), uno=True)
+        hash_guardado = usuario["password_hash"] if usuario else _HASH_FICTICIO
+        if check_password_hash(hash_guardado, password) and usuario:
+            session.clear()
+            session["usuario_id"] = usuario["id"]
+            session.permanent = True
+            return redirect(_destino_seguro(request.args.get("next")))
+        flash("Correo o contraseña incorrectos.", "error")
+        return render_template("auth/login.html", email=email), 401
+    return render_template("auth/login.html", email=email)
+
+
+@bp.post("/logout")
+def logout():
+    session.clear()
+    flash("Cerraste sesión. ¡Hasta pronto!", "info")
+    return redirect(url_for("main.index"))
 # [rutas]

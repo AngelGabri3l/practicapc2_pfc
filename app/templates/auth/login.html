@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Ingresar{% endblock %}
+{% block contenido %}
+<div class="panel-form">
+  <header class="encabezado">
+    <div>
+      <h1>Te damos la bienvenida</h1>
+      <p>Ingresa para publicar, aceptar o administrar.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ url_for('auth.login', next=request.args.get('next')) }}" class="tarjeta formulario">
+    {{ m.csrf() }}
+    {{ m.campo('email', 'Correo electrónico', email, tipo='email', autocomplete='email') }}
+    {{ m.campo('password', 'Contraseña', '', tipo='password', autocomplete='current-password') }}
+    <button class="boton boton--primario boton--bloque" type="submit">Ingresar</button>
+    <div class="pie-form">
+      <p>¿Aún no tienes cuenta?</p>
+      <a href="{{ url_for('auth.registro') }}">Crear una cuenta</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
