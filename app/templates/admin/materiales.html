@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Catálogo de materiales{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>Catálogo de materiales</h1>
+    <p>Los puntos de acopio y las ofertas usan estos mismos tipos.</p>
+  </div>
+  <a class="boton boton--fantasma" href="{{ url_for('admin.inicio') }}">Volver al panel</a>
+</header>
+<div class="detalle">
+  <section class="tarjeta">
+    <h2>Materiales ({{ materiales|length }})</h2>
+    <ul class="chips">
+      {% for material in materiales %}<li class="chip">{{ material.nombre }}</li>{% endfor %}
+    </ul>
+  </section>
+  <form method="post" class="tarjeta formulario">
+    {{ m.csrf() }}
+    <h2>Agregar material</h2>
+    {{ m.campo('nombre', 'Nombre del material', nombre, error, ayuda='Por ejemplo: Tetra Pak o Aceite usado.') }}
+    <button class="boton boton--primario" type="submit">{{ m.icono('mas') }} Agregar</button>
+  </form>
+</div>
+{% endblock %}

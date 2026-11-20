@@ -9,6 +9,11 @@
   </div>
 </header>
 <div class="rejilla">
+  <a class="tarjeta tarjeta-accion" href="{{ url_for('admin.materiales') }}">
+    <span class="tarjeta-accion__icono">{{ m.icono('lista') }}</span>
+    <h3>Catálogo de materiales</h3>
+    <p>Papel, cartón, plástico, vidrio, metal, electrónicos y más.</p>
+  </a>
   {# admin-tarjetas #}
   <div class="tarjeta tarjeta-accion">
     <span class="tarjeta-accion__icono">{{ m.icono('escudo') }}</span>
