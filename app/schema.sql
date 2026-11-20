@@ -12,4 +12,11 @@ CREATE TABLE IF NOT EXISTS usuarios (
   telefono VARCHAR(20) NULL,
   creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS materiales (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(40) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT IGNORE INTO materiales (nombre) VALUES
+  ('Papel'), ('Cartón'), ('Plástico'), ('Vidrio'), ('Metal'), ('Electrónicos');
 -- [fin-esquema]
