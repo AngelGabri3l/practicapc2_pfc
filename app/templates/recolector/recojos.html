@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titulo %}Mis recojos{% endblock %}
+{% block contenido %}
+<header class="encabezado">
+  <div>
+    <h1>Mis recojos</h1>
+    <p>Las ofertas que aceptaste, con su dirección.</p>
+  </div>
+  <a class="boton boton--secundario" href="{{ url_for('recolector.ofertas') }}">{{ m.icono('buscar') }} Ver ofertas</a>
+</header>
+{% if recojos %}
+<ul class="lista">
+  {% for recojo in recojos %}
+  <li class="item">
+    <div class="item__cabecera">
+      <h2 class="item__titulo"><a href="{{ url_for('recolector.detalle', oferta_id=recojo.id) }}">{{ recojo.material }} · {{ recojo.cantidad }}</a></h2>
+      {{ m.estado(recojo.estado) }}
+    </div>
+    <ul class="meta">
+      <li>{{ m.icono('pin') }} {{ recojo.direccion }}</li>
+      <li>{{ m.icono('calendario') }} {{ recojo.fecha|fecha }}</li>
+      <li>{{ m.icono('reloj') }} {{ recojo.hora_inicio|hora }} a {{ recojo.hora_fin|hora }}</li>
+    </ul>
+    <div class="acciones">
+      {# recojo-acciones #}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="vacio">
+  {{ m.icono('camion') }}
+  <p><strong>Aún no aceptaste ofertas</strong></p>
+  <p>Revisa las ofertas de tu distrito y acepta la que puedas recoger.</p>
+</div>
+{% endif %}
+{% endblock %}

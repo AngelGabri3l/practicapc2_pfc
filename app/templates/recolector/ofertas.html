@@ -6,6 +6,7 @@
     <h1>Ofertas en {{ g.usuario.distrito }}</h1>
     <p>Material listo para recoger. La dirección exacta se muestra cuando aceptas.</p>
   </div>
+  <a class="boton boton--secundario" href="{{ url_for('recolector.recojos') }}">{{ m.icono('camion') }} Mis recojos</a>
   {# encabezado-acciones #}
 </header>
 {% if ofertas %}
