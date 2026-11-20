@@ -40,6 +40,8 @@ def create_app(ajustes=None):
 
     from .blueprints import main
     app.register_blueprint(main.bp)
+    from .blueprints import auth
+    app.register_blueprint(auth.bp)
     # [blueprints]
 
     @app.after_request

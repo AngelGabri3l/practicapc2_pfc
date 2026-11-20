@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Crear cuenta{% endblock %}
+{% block contenido %}
+<div class="panel-form">
+  <header class="encabezado">
+    <div>
+      <h1>Crea tu cuenta</h1>
+      <p>Elige cómo quieres participar. Te tomará un minuto.</p>
+    </div>
+  </header>
+  <form method="post" class="tarjeta formulario">
+    {{ m.csrf() }}
+    <fieldset class="campo">
+      <legend>¿Cómo quieres participar?</legend>
+      <div class="opciones">
+        <label class="opcion">
+          <input type="radio" name="rol" value="ciudadano"{% if datos.rol == 'ciudadano' %} checked{% endif %}>
+          <span class="opcion__caja">{{ m.icono('hoja') }}<span><strong>Entrego reciclables</strong><small>Hogar o negocio</small></span></span>
+        </label>
+        <label class="opcion">
+          <input type="radio" name="rol" value="recolector"{% if datos.rol == 'recolector' %} checked{% endif %}>
+          <span class="opcion__caja">{{ m.icono('camion') }}<span><strong>Recolecto material</strong><small>Reciclador o recolector</small></span></span>
+        </label>
+      </div>
+      {% if errores.rol %}<p class="campo__error">{{ errores.rol }}</p>{% endif %}
+    </fieldset>
+    {{ m.campo('nombre', 'Nombre completo', datos.nombre, errores.nombre, autocomplete='name') }}
+    {{ m.campo('email', 'Correo electrónico', datos.email, errores.email, tipo='email', autocomplete='email') }}
+    {{ m.campo('password', 'Contraseña', '', errores.password, tipo='password', ayuda='Mínimo 8 caracteres.', autocomplete='new-password') }}
+    <div class="fila-campos">
+      {{ m.selector('distrito', 'Distrito', distritos, datos.distrito, errores.distrito, vacio='Elige tu distrito') }}
+      {{ m.campo('telefono', 'Teléfono', datos.telefono, errores.telefono, tipo='tel', ayuda='Solo se comparte al coordinar un recojo.', autocomplete='tel', requerido=False) }}
+    </div>
+    <button class="boton boton--primario boton--bloque" type="submit">Crear cuenta</button>
+    <p class="campo__ayuda">Usamos tus datos solo para coordinar recojos. No los compartimos con nadie más.</p>
+  </form>
+</div>
+{% endblock %}
