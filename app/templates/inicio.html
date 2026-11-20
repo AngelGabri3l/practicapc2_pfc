@@ -15,6 +15,11 @@
 </header>
 <div class="rejilla">
   {% if g.usuario.rol == 'ciudadano' %}
+  <a class="tarjeta tarjeta-accion" href="{{ url_for('ofertas.nueva') }}">
+    <span class="tarjeta-accion__icono">{{ m.icono('mas') }}</span>
+    <h3>Publicar material</h3>
+    <p>Cuéntanos qué tienes y cuándo pueden pasar por ello.</p>
+  </a>
   {# panel-ciudadano #}
   {% elif g.usuario.rol == 'recolector' %}
   {# panel-recolector #}

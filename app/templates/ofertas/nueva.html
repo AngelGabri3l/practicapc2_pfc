@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block titulo %}Publicar material{% endblock %}
+{% block contenido %}
+<div class="panel-form panel-form--ancho">
+  <header class="encabezado">
+    <div>
+      <h1>Publica tu material reciclable</h1>
+      <p>Los recolectores de tu distrito verán la oferta. La dirección exacta solo la ve quien la acepte.</p>
+    </div>
+  </header>
+  <form method="post" class="tarjeta formulario">
+    {{ m.csrf() }}
+    <div class="fila-campos">
+      {{ m.selector('material_id', 'Material', materiales, datos.material_id, errores.material_id, vacio='Elige el material') }}
+      {{ m.campo('cantidad', 'Cantidad aproximada', datos.cantidad, errores.cantidad, ayuda='Por ejemplo: 3 cajas medianas o 2 bolsas.') }}
+    </div>
+    <div class="fila-campos">
+      {{ m.campo('direccion', 'Dirección de recojo', datos.direccion, errores.direccion, ayuda='Solo la verá el recolector que acepte.', autocomplete='street-address') }}
+      {{ m.selector('distrito', 'Distrito', distritos, datos.distrito, errores.distrito, vacio='Elige el distrito') }}
+    </div>
+    <fieldset class="campo">
+      <legend>Ventana de recojo</legend>
+      <div class="fila-campos fila-campos--3">
+        {{ m.campo('fecha', 'Fecha', datos.fecha, errores.fecha, tipo='date', extra={'min': hoy}) }}
+        {{ m.campo('hora_inicio', 'Desde', datos.hora_inicio, None, tipo='time') }}
+        {{ m.campo('hora_fin', 'Hasta', datos.hora_fin, errores.hora_fin, tipo='time') }}
+      </div>
+    </fieldset>
+    <div class="pie-form">
+      <a class="boton boton--fantasma" href="{{ url_for('main.inicio') }}">Cancelar</a>
+      <button class="boton boton--primario" type="submit">{{ m.icono('check') }} Publicar oferta</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

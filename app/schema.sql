@@ -28,4 +28,24 @@ CREATE TABLE IF NOT EXISTS puntos_acopio (
   creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_puntos_distrito (distrito, activo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS ofertas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ciudadano_id INT NOT NULL,
+  material_id INT NOT NULL,
+  cantidad VARCHAR(60) NOT NULL,
+  direccion VARCHAR(200) NOT NULL,
+  distrito VARCHAR(60) NOT NULL,
+  fecha DATE NOT NULL,
+  hora_inicio TIME NOT NULL,
+  hora_fin TIME NOT NULL,
+  estado ENUM('Disponible', 'Aceptada', 'Recogida', 'Cancelada') NOT NULL DEFAULT 'Disponible',
+  recolector_id INT NULL,
+  aceptada_en DATETIME NULL,
+  recogida_en DATETIME NULL,
+  creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_ofertas_estado_distrito (estado, distrito),
+  CONSTRAINT fk_oferta_ciudadano FOREIGN KEY (ciudadano_id) REFERENCES usuarios (id),
+  CONSTRAINT fk_oferta_material FOREIGN KEY (material_id) REFERENCES materiales (id),
+  CONSTRAINT fk_oferta_recolector FOREIGN KEY (recolector_id) REFERENCES usuarios (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- [fin-esquema]
