@@ -78,4 +78,29 @@ def iniciar_sesion(post):
         assert respuesta.status_code == 302, "no se pudo iniciar sesión"
         return respuesta
     return entrar
+@pytest.fixture
+def entrar_como(app, crear_usuario, iniciar_sesion):
+    """Crea un usuario con el rol indicado, inicia sesión y devuelve (cliente, id)."""
+    contador = {"n": 0}
+
+    def entrar(rol, distrito="Miraflores", **datos):
+        contador["n"] += 1
+        email = datos.pop("email", f"{rol}{contador['n']}@example.com")
+        usuario_id = crear_usuario(email, rol=rol, distrito=distrito, **datos)
+        cliente = app.test_client()
+        iniciar_sesion(cliente, email)
+        return cliente, usuario_id
+    return entrar
+
+
+@pytest.fixture
+def crear_punto(app):
+    def crear(nombre="Punto de prueba", direccion="Calle Ficticia 100", distrito="Miraflores", activo=1):
+        with app.app_context():
+            _, punto_id = bd.execute(
+                "INSERT INTO puntos_acopio (nombre, direccion, distrito, activo) VALUES (%s, %s, %s, %s)",
+                (nombre, direccion, distrito, activo),
+            )
+        return punto_id
+    return crear
 # [fixtures]
