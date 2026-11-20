@@ -6,6 +6,7 @@
     <h1>Ofertas en {{ g.usuario.distrito }}</h1>
     <p>Material listo para recoger. La dirección exacta se muestra cuando aceptas.</p>
   </div>
+  <a class="boton boton--secundario" href="{{ url_for('recolector.recojos') }}">{{ m.icono('camion') }} Mis recojos</a>
   {# encabezado-acciones #}
 </header>
 {% if ofertas %}
@@ -22,6 +23,10 @@
       <li>{{ m.icono('escudo') }} Dirección visible al aceptar</li>
     </ul>
     <div class="acciones">
+      <form method="post" action="{{ url_for('recolector.aceptar', oferta_id=oferta.id) }}">
+        {{ m.csrf() }}
+        <button class="boton boton--primario boton--sm" type="submit">{{ m.icono('check') }} Aceptar recojo</button>
+      </form>
       {# oferta-acciones #}
     </div>
   </li>

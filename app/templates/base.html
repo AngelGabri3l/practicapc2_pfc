@@ -42,6 +42,7 @@
             {# nav-ciudadano #}
             {% elif usuario.rol == 'recolector' %}
             {{ m.enlace('recolector.ofertas', 'Ofertas', 'buscar') }}
+            {{ m.enlace('recolector.recojos', 'Mis recojos', 'camion') }}
             {# nav-recolector #}
             {% elif usuario.rol == 'admin' %}
             {{ m.enlace('admin.inicio', 'Administración', 'escudo') }}
