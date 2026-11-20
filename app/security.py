@@ -46,4 +46,15 @@ def login_requerido(vista):
             return redirect(url_for("auth.login", next=request.path))
         return vista(*args, **kwargs)
     return envoltura
+def rol_requerido(*roles):
+    """Exige sesión iniciada y uno de los roles indicados; si no, responde 403."""
+    def decorador(vista):
+        @wraps(vista)
+        @login_requerido
+        def envoltura(*args, **kwargs):
+            if g.usuario["rol"] not in roles:
+                abort(403)
+            return vista(*args, **kwargs)
+        return envoltura
+    return decorador
 # [sesion]

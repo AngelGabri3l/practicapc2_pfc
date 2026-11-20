@@ -1,7 +1,7 @@
 """Fábrica de la aplicación ReciclaRed."""
 from flask import Flask, render_template
 
-from . import db, filtros
+from . import db, filtros, seed
 from .config import Config
 from .security import cargar_usuario, csrf_token, validar_csrf
 # [imports]
@@ -43,6 +43,8 @@ def create_app(ajustes=None):
     app.register_blueprint(main.bp)
     from .blueprints import auth
     app.register_blueprint(auth.bp)
+    from .blueprints import admin
+    app.register_blueprint(admin.bp)
     # [blueprints]
 
     @app.after_request
@@ -58,5 +60,6 @@ def create_app(ajustes=None):
 
     with app.app_context():
         db.init_schema()
+        seed.crear_admin_inicial()
         # [semillas]
     return app
