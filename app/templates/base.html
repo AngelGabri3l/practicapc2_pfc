@@ -33,6 +33,7 @@
       </label>
       <nav class="nav" aria-label="Navegación principal">
         <ul class="nav__lista">
+          {{ m.enlace('directorio.listado', 'Puntos de acopio', 'pin') }}
           {# nav-publico #}
           {% if usuario %}
             {% if usuario.rol == 'ciudadano' %}
