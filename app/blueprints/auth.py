@@ -52,7 +52,7 @@ def registro():
                 errores["email"] = "Ya existe una cuenta con este correo."
             else:
                 flash("¡Tu cuenta está lista! Ya puedes iniciar sesión.", "exito")
-                return redirect(url_for("main.index"))
+                return redirect(url_for("auth.login"))
     codigo = 422 if errores else 200
     return render_template("auth/registro.html", datos=datos, errores=errores, distritos=OPCIONES_DISTRITO), codigo
 # Hash aleatorio para comparar aunque el correo no exista (mismo tiempo de respuesta).
