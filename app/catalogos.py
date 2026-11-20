@@ -24,4 +24,5 @@ def leer_fecha(texto):
         return date.fromisoformat(texto)
     except ValueError:
         return None
+DIAS = [(1, "Lunes"), (2, "Martes"), (3, "Miércoles"), (4, "Jueves"), (5, "Viernes"), (6, "Sábado"), (7, "Domingo")]
 # [catalogos]

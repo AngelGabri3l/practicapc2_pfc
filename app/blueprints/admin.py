@@ -4,7 +4,8 @@ from pymysql.err import IntegrityError
 
 from .. import db
 from ..security import rol_requerido
-from ..catalogos import DISTRITOS, OPCIONES_DISTRITO
+from ..catalogos import DIAS, DISTRITOS, OPCIONES_DISTRITO, leer_hora
+from ..filtros import hora as formato_hora
 # [imports]
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -68,8 +69,67 @@ def punto_nuevo():
                 "INSERT INTO puntos_acopio (nombre, direccion, distrito) VALUES (%s, %s, %s)",
                 (datos["nombre"], datos["direccion"], datos["distrito"]),
             )
-            flash(f"Registraste «{datos['nombre']}» en el directorio.", "exito")
-            return redirect(url_for("admin.puntos"))
+            flash(f"Registraste «{datos['nombre']}». Ahora indica qué materiales recibe y su horario.", "exito")
+            return redirect(url_for("admin.punto_materiales_horarios", punto_id=punto_id))
     return render_template("admin/punto_form.html", datos=datos, errores=errores, distritos=OPCIONES_DISTRITO,
                            modo="nuevo"), (422 if errores else 200)
+def _leer_materiales_y_horarios(ids_validos):
+    elegidos = {int(v) for v in request.form.getlist("materiales") if v.isdigit() and int(v) in ids_validos}
+    horas, horarios, errores = {}, {}, []
+    for numero, nombre in DIAS:
+        apertura = request.form.get(f"apertura_{numero}", "").strip()
+        cierre = request.form.get(f"cierre_{numero}", "").strip()
+        horas[numero] = (apertura, cierre)
+        if not apertura and not cierre:
+            continue
+        inicio, fin = leer_hora(apertura), leer_hora(cierre)
+        if inicio is None or fin is None:
+            errores.append(f"{nombre}: indica la hora de apertura y la de cierre.")
+        elif fin <= inicio:
+            errores.append(f"{nombre}: la hora de cierre debe ser posterior a la de apertura.")
+        else:
+            horarios[numero] = (apertura, cierre)
+    return elegidos, horas, horarios, errores
+
+
+def _guardar_materiales_y_horarios(punto_id, elegidos, horarios):
+    """Reemplaza materiales y horarios del punto en una sola transacción."""
+    conexion = db.get_db()
+    conexion.begin()
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute("DELETE FROM punto_material WHERE punto_id = %s", (punto_id,))
+            cursor.execute("DELETE FROM horarios WHERE punto_id = %s", (punto_id,))
+            for material_id in sorted(elegidos):
+                cursor.execute("INSERT INTO punto_material (punto_id, material_id) VALUES (%s, %s)", (punto_id, material_id))
+            for dia, (apertura, cierre) in sorted(horarios.items()):
+                cursor.execute("INSERT INTO horarios (punto_id, dia, apertura, cierre) VALUES (%s, %s, %s, %s)",
+                               (punto_id, dia, apertura, cierre))
+        conexion.commit()
+    except Exception:
+        conexion.rollback()
+        raise
+
+
+@bp.route("/puntos/<int:punto_id>/materiales-horarios", methods=["GET", "POST"])
+@rol_requerido("admin")
+def punto_materiales_horarios(punto_id):
+    punto = db.query("SELECT id, nombre, distrito FROM puntos_acopio WHERE id = %s", (punto_id,), uno=True)
+    if punto is None:
+        abort(404)
+    materiales = db.query("SELECT id, nombre FROM materiales ORDER BY nombre")
+    errores = []
+    if request.method == "POST":
+        elegidos, horas, horarios, errores = _leer_materiales_y_horarios({mat["id"] for mat in materiales})
+        if not errores:
+            _guardar_materiales_y_horarios(punto_id, elegidos, horarios)
+            flash("Guardaste los materiales y el horario del punto.", "exito")
+            return redirect(url_for("admin.punto_materiales_horarios", punto_id=punto_id))
+    else:
+        elegidos = {fila["material_id"] for fila in db.query(
+            "SELECT material_id FROM punto_material WHERE punto_id = %s", (punto_id,))}
+        horas = {fila["dia"]: (formato_hora(fila["apertura"]), formato_hora(fila["cierre"])) for fila in db.query(
+            "SELECT dia, apertura, cierre FROM horarios WHERE punto_id = %s", (punto_id,))}
+    return render_template("admin/punto_materiales.html", punto=punto, materiales=materiales, dias=DIAS,
+                           elegidos=elegidos, horas=horas, errores=errores), (422 if errores else 200)
 # [rutas]

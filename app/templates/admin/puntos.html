@@ -24,6 +24,7 @@
       <li>{{ m.icono('tienda') }} {{ punto.distrito }}</li>
     </ul>
     <div class="acciones">
+      <a class="boton boton--secundario boton--sm" href="{{ url_for('admin.punto_materiales_horarios', punto_id=punto.id) }}">{{ m.icono('reloj') }} Materiales y horarios</a>
       {# punto-acciones #}
     </div>
   </li>

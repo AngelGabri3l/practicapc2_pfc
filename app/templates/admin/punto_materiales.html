@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block titulo %}Materiales y horarios{% endblock %}
+{% block contenido %}
+<div class="panel-form panel-form--ancho">
+  <header class="encabezado">
+    <div>
+      <h1>{{ punto.nombre }}</h1>
+      <p>Elige qué materiales recibe y en qué horario atiende · {{ punto.distrito }}</p>
+    </div>
+    <a class="boton boton--fantasma" href="{{ url_for('admin.puntos') }}">Volver</a>
+  </header>
+  {% if errores %}
+  <div class="avisos" role="alert">
+    {% for error in errores %}<p class="aviso aviso--error">{{ error }}</p>{% endfor %}
+  </div>
+  {% endif %}
+  <form method="post" class="tarjeta formulario">
+    {{ m.csrf() }}
+    <fieldset class="campo">
+      <legend>Materiales que recibe</legend>
+      <div class="chips">
+        {% for material in materiales %}
+        <label class="chip-check">
+          <input type="checkbox" name="materiales" value="{{ material.id }}"{% if material.id in elegidos %} checked{% endif %}>
+          <span>{{ material.nombre }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+    <fieldset class="campo">
+      <legend>Horario de atención</legend>
+      <p class="campo__ayuda">Deja vacío un día si el punto no atiende.</p>
+      <div class="horario">
+        {% for numero, nombre in dias %}
+        {% set par = horas.get(numero, ('', '')) %}
+        <div class="horario__fila">
+          <span class="horario__dia">{{ nombre }}</span>
+          <label class="horario__hora">Abre <span class="sr-only">el {{ nombre }}</span>
+            <input type="time" name="apertura_{{ numero }}" value="{{ par[0] }}">
+          </label>
+          <label class="horario__hora">Cierra <span class="sr-only">el {{ nombre }}</span>
+            <input type="time" name="cierre_{{ numero }}" value="{{ par[1] }}">
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+    </fieldset>
+    <div class="pie-form">
+      <a class="boton boton--fantasma" href="{{ url_for('admin.puntos') }}">Cancelar</a>
+      <button class="boton boton--primario" type="submit">Guardar materiales y horarios</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
